@@ -12,15 +12,7 @@
 
 ---
 
-    /\
 
-/ \
- /----\
- /**\_\_**\
-/ RETR \
-/WAVE/\ \ / //\_//|| |||| CYBER |||| SQUAD |||| DIVIDER ||||||(****\_****)|| |||| GRID |||| ONLINE ||----------
-
----
 
 ### **// SYSTEM ONLINE: ENGAGE RETRO-FUTURISTIC INTERFACE //** 🚀
 
