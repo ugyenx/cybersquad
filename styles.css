@@ -72,7 +72,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.3;
+  opacity: 0.4;
   filter: grayscale(90%) contrast(1.6) brightness(0.7) sepia(30%);
 }
 
@@ -314,6 +314,7 @@ main {
   font-family: var(--font-body);
   font-size: 1rem;
   transition: all 0.3s;
+  width: 100%; /* Ensure inputs take full width */
 }
 .form-group input[type="file"] {
   padding: 0.5rem;
@@ -405,9 +406,14 @@ main {
 .form-actions {
   grid-column: 1 / -1;
   display: flex;
-  justify-content: center;
-  gap: 1.5rem;
+  flex-direction: column; /* Stack buttons on small screens */
+  align-items: center; /* Center stacked buttons */
+  gap: 1rem; /* Adjust gap for stacked buttons */
   margin-top: 2rem;
+}
+.form-actions .btn {
+  width: 100%; /* Make buttons take full width */
+  max-width: 280px; /* Optional: constrain max width */
 }
 
 .btn {
@@ -605,7 +611,7 @@ main {
   border: var(--border-neon);
   backdrop-filter: blur(6px);
   flex: 1;
-  min-width: 320px;
+  min-width: 320px; /* Adjusted for better responsiveness */
   max-width: 600px;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
 }
@@ -627,8 +633,8 @@ main {
 }
 .formation-controls {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column; /* Stack on smaller screens */
+  align-items: center; /* Center items */
   margin-bottom: 1.5rem;
   gap: 0.8rem;
 }
@@ -645,6 +651,8 @@ main {
   border-radius: 4px;
   font-family: var(--font-pixel);
   font-size: 1.2rem;
+  width: 100%; /* Make select full width */
+  max-width: 200px; /* Optional: constrain max width */
 }
 .pitch {
   background-image: linear-gradient(
@@ -652,7 +660,7 @@ main {
       transparent 1px
     ),
     linear-gradient(90deg, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
-  background-size: 10% 20%;
+  background-size: 10% 20%; /* Adjusted for better visual on small screens */
   background-color: rgba(0, 30, 10, 0.4);
   border: 3px solid var(--color-hot-pink);
   box-shadow: inset 0 0 15px rgba(255, 0, 255, 0.3),
@@ -758,6 +766,7 @@ footer p {
 }
 
 @media (max-width: 768px) {
+  /* Tablet and larger mobile */
   header h1 {
     font-size: 2rem;
   }
@@ -770,13 +779,14 @@ footer p {
     padding: 1.5rem;
   }
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column for forms */
   }
   .teams-container {
-    flex-direction: column;
+    flex-direction: column; /* Stack team panels */
   }
   .team-panel {
-    max-width: 100%;
+    max-width: 100%; /* Allow panels to take full width when stacked */
+    padding: 1.5rem;
   }
   .pitch {
     height: 380px;
@@ -793,8 +803,26 @@ footer p {
     width: 90%;
     padding: 25px;
   }
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .form-actions .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  .formation-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  .formation-controls select {
+    width: 80%;
+    max-width: 250px;
+  }
 }
+
 @media (max-width: 480px) {
+  /* Smaller mobile screens like iPhone Mini */
   header h1 {
     font-size: 1.6rem;
   }
@@ -806,34 +834,94 @@ footer p {
   nav button {
     margin-bottom: 0.5rem;
     flex-basis: calc(50% - 1rem);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+  main {
+    padding: 1rem;
+  }
+  .form-container,
+  .player-list-container,
+  .teams-display-container {
+    /* Adjusted player-list-container padding as well for consistency */
+    padding: 1.5rem;
   }
   .section-title {
     font-size: 1.4rem;
   }
-  .pitch {
-    height: 320px;
-  }
   .form-group label {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  .form-group input,
+  .form-group select {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .stat-value {
+    font-size: 1.2rem;
+  }
+  #total-stat-sum {
+    font-size: 1.3rem;
+    padding: 0.6rem;
   }
   .btn {
-    padding: 0.7rem 1.5rem;
-    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .teams-container {
+    gap: 1.5rem; /* Adjusted vertical gap for stacked panels */
+    /* flex-direction: column; is inherited from @media (max-width: 768px) */
+  }
+  .team-panel {
+    min-width: 0; /* Allow panel to shrink fully if needed */
+    width: 100%; /* Ensure panel takes full width of its parent .teams-container */
+    padding: 1rem;
+  }
+  .team-panel h3 {
+    font-size: 1.5rem;
   }
   .team-panel .team-total-stat {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
   }
+  .formation-controls label {
+    font-size: 0.9rem;
+  }
+  .formation-controls select {
+    font-size: 1rem;
+    padding: 0.5rem;
+    /* width: 100%; max-width: 200px; are already applied and good */
+  }
+  .pitch {
+    height: 300px;
+    background-size: 15% 25%;
+  }
+  .player-token {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+    max-width: 70px;
+  }
+
   .modal-content {
     width: 95%;
     padding: 20px;
   }
 
+  /* Player card list on small screens */
+  .player-list {
+    grid-template-columns: 1fr; /* Stack player cards */
+    gap: 1.5rem;
+  }
+  .player-card-svg-container {
+    padding: 8px; /* Adjust padding for stacked cards */
+  }
   .player-card-actions-html {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
   .player-card-actions-html > div:first-child {
+    /* Select checkbox container */
     width: 100%;
     text-align: center;
     margin-bottom: 0;

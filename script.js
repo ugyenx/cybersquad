@@ -494,8 +494,8 @@
         imgHeight = 140;
 
       let imageElementHtml = `
-                    <rect x="${imgX}" y="${imgY}" width="${imgWidth}" height="${imgHeight}" fill="rgba(var(--color-dark-grey-rgb, 26,26,26), 0.5)" clip-path="url(#${clipPathId})"/>
-                    <text x="${imgX + imgWidth / 2}" y="${
+                  <rect x="${imgX}" y="${imgY}" width="${imgWidth}" height="${imgHeight}" fill="rgba(var(--color-dark-grey-rgb, 26,26,26), 0.5)" clip-path="url(#${clipPathId})"/>
+                  <text x="${imgX + imgWidth / 2}" y="${
         imgY + imgHeight / 2
       }" class="svg-no-scan-text">NO SCAN</text>`;
       if (player.imageUrl) {
@@ -503,69 +503,69 @@
       }
 
       const svgMarkup = `
-                    <svg id="${cardId}" class="player-card-svg" viewBox="0 0 280 400" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <clipPath id="${clipPathId}">
-                                <rect x="${imgX}" y="${imgY}" width="${imgWidth}" height="${imgHeight}" rx="10" ry="10"/>
-                            </clipPath>
-                            <linearGradient id="${uniqueGradientId}" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:var(--color-card-bg-light); stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:var(--color-card-bg-dark); stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                  <svg id="${cardId}" class="player-card-svg" viewBox="0 0 280 400" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                          <clipPath id="${clipPathId}">
+                              <rect x="${imgX}" y="${imgY}" width="${imgWidth}" height="${imgHeight}" rx="10" ry="10"/>
+                          </clipPath>
+                          <linearGradient id="${uniqueGradientId}" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" style="stop-color:var(--color-card-bg-light); stop-opacity:1" />
+                              <stop offset="100%" style="stop-color:var(--color-card-bg-dark); stop-opacity:1" />
+                          </linearGradient>
+                      </defs>
 
-                        <path class="svg-card-frame-outer" d="${outerPathD}" />
-                        <path class="svg-card-frame-middle" d="${middlePathD}" fill="url(#${uniqueGradientId})" />
-                        <path class="svg-card-frame-inner-bg" d="${innerBgPathD}" />
-                        
-                        <path class="svg-card-accent-top" d="${accentTopPathD}" />
-                        <path class="svg-card-accent-side" d="${accentSideLeftPathD}" />
-                        <path class="svg-card-accent-side" d="${accentSideRightPathD}" />
-                        
-                        ${imageElementHtml}
+                      <path class="svg-card-frame-outer" d="${outerPathD}" />
+                      <path class="svg-card-frame-middle" d="${middlePathD}" fill="url(#${uniqueGradientId})" />
+                      <path class="svg-card-frame-inner-bg" d="${innerBgPathD}" />
+                      
+                      <path class="svg-card-accent-top" d="${accentTopPathD}" />
+                      <path class="svg-card-accent-side" d="${accentSideLeftPathD}" />
+                      <path class="svg-card-accent-side" d="${accentSideRightPathD}" />
+                      
+                      ${imageElementHtml}
 
-                        <text x="55" y="50" class="svg-player-avg">${
-                          // Adjusted X from 45 to 55
-                          player.averageStat || "N/A"
+                      <text x="55" y="50" class="svg-player-avg">${
+                        // Adjusted X from 45 to 55
+                        player.averageStat || "N/A"
+                      }</text>
+                      <text x="55" y="75" class="svg-player-pos">${
+                        // Adjusted X from 45 to 55
+                        player.position
+                      }</text>
+                      
+                      <text x="140" y="${
+                        imgY + imgHeight + 35
+                      }" class="svg-player-name">${player.name}</text>
+                      
+                      ${STAT_NAMES.map(
+                        (statName, index) => `
+                          <text x="${index % 2 === 0 ? 45 : 165}" y="${
+                          imgY + imgHeight + 70 + Math.floor(index / 2) * 22
+                        }" class="svg-stat-label">${statName
+                          .substring(0, 3)
+                          .toUpperCase()}</text>
+                          <text x="${index % 2 === 0 ? 125 : 245}" y="${
+                          imgY + imgHeight + 70 + Math.floor(index / 2) * 22
+                        }" class="svg-stat-value">${
+                          player.stats[statName] || 0
                         }</text>
-                        <text x="55" y="75" class="svg-player-pos">${
-                          // Adjusted X from 45 to 55
-                          player.position
-                        }</text>
-                        
-                        <text x="140" y="${
-                          imgY + imgHeight + 35
-                        }" class="svg-player-name">${player.name}</text>
-                        
-                        ${STAT_NAMES.map(
-                          (statName, index) => `
-                            <text x="${index % 2 === 0 ? 45 : 165}" y="${
-                            imgY + imgHeight + 70 + Math.floor(index / 2) * 22
-                          }" class="svg-stat-label">${statName
-                            .substring(0, 3)
-                            .toUpperCase()}</text>
-                            <text x="${index % 2 === 0 ? 125 : 245}" y="${
-                            imgY + imgHeight + 70 + Math.floor(index / 2) * 22
-                          }" class="svg-stat-value">${
-                            player.stats[statName] || 0
-                          }</text>
-                        `
-                        ).join("")}
-                    </svg>
-                `;
+                      `
+                      ).join("")}
+                  </svg>
+              `;
 
       const actionsHtml = `
-                    <div class="player-card-actions-html">
-                        <div> 
-                            <input type="checkbox" class="player-select-checkbox" id="${checkboxId}" data-player-id="${player.id}">
-                            <label for="${checkboxId}">SELECT</label>
-                        </div>
-                        <div class="action-buttons-group">
-                            <button class="btn btn-secondary edit-player-btn" data-player-id="${player.id}">Edit File</button>
-                            <button class="btn btn-secondary delete-player-btn" style="background-color: #5d1a33; border-color: #FF0055; color: #FF0055;" data-player-id="${player.id}">Terminate</button>
-                        </div>
-                    </div>
-                `;
+                  <div class="player-card-actions-html">
+                      <div> 
+                          <input type="checkbox" class="player-select-checkbox" id="${checkboxId}" data-player-id="${player.id}">
+                          <label for="${checkboxId}">SELECT</label>
+                      </div>
+                      <div class="action-buttons-group">
+                          <button class="btn btn-secondary edit-player-btn" data-player-id="${player.id}">Edit File</button>
+                          <button class="btn btn-secondary delete-player-btn" style="background-color: #5d1a33; border-color: #FF0055; color: #FF0055;" data-player-id="${player.id}">Terminate</button>
+                      </div>
+                  </div>
+              `;
 
       cardWrapper.innerHTML = svgMarkup + actionsHtml;
       registeredPlayersListDiv.appendChild(cardWrapper);
