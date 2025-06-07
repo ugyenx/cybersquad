@@ -72,7 +72,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.4;
+  opacity: 0.3;
   filter: grayscale(90%) contrast(1.6) brightness(0.7) sepia(30%);
 }
 
@@ -177,6 +177,11 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+header.header-hidden {
+  transform: translateY(-100%);
 }
 
 header h1 {
@@ -209,6 +214,13 @@ header h1 {
   }
 }
 
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 nav button {
   font-family: var(--font-title);
   font-weight: 700;
@@ -216,7 +228,7 @@ nav button {
   color: var(--color-hot-pink);
   border: 2px solid var(--color-hot-pink);
   padding: 0.6rem 1.2rem;
-  margin: 0.5rem 0.5rem;
+  margin: 0; /* Remove margin, use gap instead */
   cursor: pointer;
   transition: all 0.2s ease-out;
   border-radius: 5px;
@@ -232,6 +244,34 @@ nav button.active-tab {
   color: var(--color-black);
   box-shadow: var(--glow-pink);
   transform: translateY(-3px) scale(1.05);
+}
+
+#mobile-nav-toggle {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-gold-accent);
+  border-radius: 30%;
+  border: 1.5px solid var(--color-neon-cyan);
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+}
+#mobile-nav-toggle:hover {
+  transform: scale(1.1);
+}
+#mobile-nav-toggle svg {
+  width: 40%;
+  height: 40%;
+  stroke: var(--color-neon-cyan);
+  stroke-width: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 main {
@@ -611,7 +651,7 @@ main {
   border: var(--border-neon);
   backdrop-filter: blur(6px);
   flex: 1;
-  min-width: 320px; /* Adjusted for better responsiveness */
+  min-width: 320px;
   max-width: 600px;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
 }
@@ -633,8 +673,8 @@ main {
 }
 .formation-controls {
   display: flex;
-  flex-direction: column; /* Stack on smaller screens */
-  align-items: center; /* Center items */
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 1.5rem;
   gap: 0.8rem;
 }
@@ -651,61 +691,98 @@ main {
   border-radius: 4px;
   font-family: var(--font-pixel);
   font-size: 1.2rem;
-  width: 100%; /* Make select full width */
-  max-width: 200px; /* Optional: constrain max width */
+  width: 100%;
+  max-width: 200px;
 }
+
+/* --- Pitch and Jersey Styles --- */
 .pitch {
-  background-image: linear-gradient(
-      rgba(0, 255, 255, 0.15) 1px,
-      transparent 1px
-    ),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
-  background-size: 10% 20%; /* Adjusted for better visual on small screens */
-  background-color: rgba(0, 30, 10, 0.4);
-  border: 3px solid var(--color-hot-pink);
-  box-shadow: inset 0 0 15px rgba(255, 0, 255, 0.3),
-    0 0 10px rgba(255, 0, 255, 0.3);
-  height: 420px;
+  background-color: #277a27;
+  border: 2px solid rgba(255, 255, 255, 0.5);
   position: relative;
-  border-radius: 6px;
   overflow: hidden;
+  height: 500px;
+  border-radius: 6px;
+  background-image: none;
+  box-shadow: none;
 }
+.pitch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.08) 0,
+    rgba(0, 0, 0, 0.08) 15%,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(0, 0, 0, 0) 30%
+  );
+  z-index: 0;
+}
+.pitch-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.pitch-lines path,
+.pitch-lines circle,
+.pitch-lines rect,
+.pitch-lines line {
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
 .player-token {
   position: absolute;
-  background: linear-gradient(
-    135deg,
-    var(--color-electric-blue),
-    var(--color-vivid-purple)
-  );
-  color: var(--color-white-glow);
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-family: var(--font-pixel);
-  font-size: 1rem;
-  text-align: center;
-  border: 1px solid var(--color-neon-cyan);
-  box-shadow: 0 0 5px var(--color-neon-cyan),
-    inset 0 0 2px rgba(255, 255, 255, 0.5);
+  width: 65px;
+  height: 65px;
   cursor: grab;
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
   transform: translate(-50%, -50%);
+  transition: transform 0.2s ease-out;
+  z-index: 5;
 }
 .player-token:hover {
-  box-shadow: 0 0 10px var(--color-hot-pink), 0 0 15px var(--color-hot-pink),
-    inset 0 0 3px rgba(255, 255, 255, 0.7);
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.15);
   z-index: 10;
 }
 .player-token.dragging {
-  opacity: 0.8;
-  background: var(--color-hot-pink);
-  box-shadow: var(--glow-pink);
+  opacity: 0.7;
   cursor: grabbing;
+  z-index: 11;
 }
+.player-jersey-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+.jersey-number {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 24px;
+  fill: #fff;
+  text-anchor: middle;
+  stroke: #000;
+  stroke-width: 1px;
+  paint-order: stroke;
+}
+.jersey-name {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  fill: #fff;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+/* --- End Pitch and Jersey Styles --- */
+
 footer {
   text-align: center;
   padding: 2rem;
@@ -765,36 +842,66 @@ footer p {
   margin-top: 1rem;
 }
 
+/* --- MOBILE PERFORMANCE AND LAYOUT OPTIMIZATIONS --- */
 @media (max-width: 768px) {
-  /* Tablet and larger mobile */
+  /* Disable most expensive animations on mobile */
+  header,
+  .form-container,
+  .player-list-container,
+  .teams-display-container,
+  .modal {
+    backdrop-filter: none;
+  }
+
+  header {
+    padding: 1rem; /* Reduce header padding */
+  }
+
   header h1 {
-    font-size: 2rem;
+    animation: none;
+    text-shadow: 0 0 8px var(--color-neon-cyan);
+    font-size: 1.8rem; /* Reduce title font size on mobile */
+    margin-bottom: 0.5rem; /* Add space between title and nav */
+  }
+
+  nav {
+    flex-direction: column; /* Stack nav buttons vertically */
+    gap: 0.5rem; /* Space between stacked buttons */
   }
   nav button {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    margin: 0.3rem;
+    width: 100%; /* Make buttons take full width */
+    margin: 0;
+  }
+
+  .stars-overlay {
+    animation: none; /* Disable star twinkling on mobile */
+    opacity: 0.3;
+  }
+
+  #mobile-nav-toggle {
+    display: flex; /* Show toggle button on mobile */
+    align-items: center;
+    justify-content: center;
   }
   main {
     padding: 1.5rem;
   }
   .form-grid {
-    grid-template-columns: 1fr; /* Single column for forms */
+    grid-template-columns: 1fr;
   }
   .teams-container {
-    flex-direction: column; /* Stack team panels */
+    flex-direction: column;
   }
   .team-panel {
-    max-width: 100%; /* Allow panels to take full width when stacked */
+    max-width: 100%;
     padding: 1.5rem;
   }
   .pitch {
-    height: 380px;
+    height: 450px;
   }
   .player-token {
-    font-size: 0.9rem;
-    padding: 0.3rem 0.6rem;
-    max-width: 80px;
+    width: 60px;
+    height: 60px;
   }
   .section-title {
     font-size: 1.7rem;
@@ -826,16 +933,9 @@ footer p {
   header h1 {
     font-size: 1.6rem;
   }
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
   nav button {
-    margin-bottom: 0.5rem;
-    flex-basis: calc(50% - 1rem);
-    font-size: 0.75rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
   }
   main {
     padding: 1rem;
@@ -843,7 +943,6 @@ footer p {
   .form-container,
   .player-list-container,
   .teams-display-container {
-    /* Adjusted player-list-container padding as well for consistency */
     padding: 1.5rem;
   }
   .section-title {
@@ -870,12 +969,11 @@ footer p {
   }
 
   .teams-container {
-    gap: 1.5rem; /* Adjusted vertical gap for stacked panels */
-    /* flex-direction: column; is inherited from @media (max-width: 768px) */
+    gap: 1.5rem;
   }
   .team-panel {
-    min-width: 0; /* Allow panel to shrink fully if needed */
-    width: 100%; /* Ensure panel takes full width of its parent .teams-container */
+    min-width: 0;
+    width: 100%;
     padding: 1rem;
   }
   .team-panel h3 {
@@ -890,16 +988,19 @@ footer p {
   .formation-controls select {
     font-size: 1rem;
     padding: 0.5rem;
-    /* width: 100%; max-width: 200px; are already applied and good */
   }
   .pitch {
-    height: 300px;
-    background-size: 15% 25%;
+    height: 400px;
   }
   .player-token {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.4rem;
-    max-width: 70px;
+    width: 50px;
+    height: 50px;
+  }
+  .jersey-number {
+    font-size: 20px;
+  }
+  .jersey-name {
+    font-size: 8px;
   }
 
   .modal-content {
@@ -907,13 +1008,12 @@ footer p {
     padding: 20px;
   }
 
-  /* Player card list on small screens */
   .player-list {
-    grid-template-columns: 1fr; /* Stack player cards */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   .player-card-svg-container {
-    padding: 8px; /* Adjust padding for stacked cards */
+    padding: 8px;
   }
   .player-card-actions-html {
     flex-direction: column;
@@ -921,7 +1021,6 @@ footer p {
     gap: 0.75rem;
   }
   .player-card-actions-html > div:first-child {
-    /* Select checkbox container */
     width: 100%;
     text-align: center;
     margin-bottom: 0;

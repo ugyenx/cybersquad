@@ -145,6 +145,8 @@
     "select-all-players-checkbox"
   );
   const selectAllLabel = document.getElementById("select-all-label");
+  const mobileNavToggle = document.getElementById("mobile-nav-toggle");
+  const header = document.querySelector("header");
 
   function init() {
     console.log("CyberSquad System Initializing...");
@@ -224,7 +226,7 @@
 
   function updateTotalStatSum() {
     const sum = calculateTotalStatSumFromInputs();
-    totalStatSumDisplay.textContent = `Total Matrix: ${sum}`;
+    totalStatSumDisplay.textContent = `Total Stats: ${sum}`;
     return sum;
   }
 
@@ -262,6 +264,23 @@
     window.addEventListener("click", (event) => {
       if (event.target === messageModal) {
         messageModal.classList.remove("active");
+      }
+    });
+
+    mobileNavToggle.addEventListener("click", () => {
+      header.classList.remove("header-hidden");
+    });
+
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      if (window.innerWidth <= 768) {
+        // Only run on mobile
+        if (lastScrollY < window.scrollY && window.scrollY > 150) {
+          header.classList.add("header-hidden");
+        } else {
+          header.classList.remove("header-hidden");
+        }
+        lastScrollY = window.scrollY;
       }
     });
 
@@ -371,7 +390,7 @@
       stats: playerStats,
       totalStat: totalStat,
       averageStat: averageStat,
-      imageUrl: null, // Will be set by finalizePlayerSave
+      imageUrl: null,
     };
 
     const imageFile = playerImageInput.files[0];
@@ -382,7 +401,6 @@
       if (editingPlayerId) {
         const index = players.findIndex((p) => p.id === editingPlayerId);
         if (index > -1) {
-          // Preserve existing image if no new one is uploaded during edit
           if (!imageUrlToSave && players[index].imageUrl) {
             playerData.imageUrl = players[index].imageUrl;
           }
@@ -393,11 +411,7 @@
       }
       savePlayers();
       renderRegisteredPlayersList();
-      showMessage(
-        `Agent ${playerData.name} ${
-          editingPlayerId ? "data updated" : "registered"
-        } (AVG: ${playerData.averageStat}). Standby.`
-      );
+      // showMessage is removed as requested
       clearPlayerForm();
     };
 
@@ -418,7 +432,6 @@
       };
       reader.readAsDataURL(imageFile);
     } else {
-      // If no new image file, preserve existing one during edit, or set to null for new player
       const existingImageUrl = editingPlayerId
         ? players.find((p) => p.id === editingPlayerId)?.imageUrl || null
         : null;
@@ -430,10 +443,10 @@
     playerForm.reset();
     editingPlayerId = null;
     editingPlayerIdInput.value = "";
-    playerImageInput.value = ""; // Clear the file input
+    playerImageInput.value = "";
     playerImagePreview.src = "#";
     playerImagePreview.style.display = "none";
-    updateStatDisplaysFromInputs(); // Resets sliders to default values visually
+    updateStatDisplaysFromInputs();
     updateTotalStatSum();
     document.querySelector('#player-form button[type="submit"]').textContent =
       "Save Agent";
@@ -476,7 +489,6 @@
       const clipPathId = `clip-${player.id}`;
       const uniqueGradientId = `cardBgGradient-${player.id}`;
 
-      // SVG Path Data for the card frame (unchanged as per request)
       const outerPathD =
         "M140,2 L250,2 Q278,2 278,30 L278,330 Q278,360 265,375 L140,398 L15,375 Q2,360 2,330 L2,30 Q2,2 30,2 Z";
       const middlePathD =
@@ -487,7 +499,6 @@
       const accentSideLeftPathD = "M2,80 L22,70 L22,150 L2,160 Z";
       const accentSideRightPathD = "M278,80 L258,70 L258,150 L278,160 Z";
 
-      // Image dimensions and position within SVG
       const imgX = 28,
         imgY = 28,
         imgWidth = 224,
@@ -525,11 +536,9 @@
                       ${imageElementHtml}
 
                       <text x="55" y="50" class="svg-player-avg">${
-                        // Adjusted X from 45 to 55
                         player.averageStat || "N/A"
                       }</text>
                       <text x="55" y="75" class="svg-player-pos">${
-                        // Adjusted X from 45 to 55
                         player.position
                       }</text>
                       
@@ -651,7 +660,6 @@
     players = players.filter((p) => p.id !== playerId);
     savePlayers();
     renderRegisteredPlayersList();
-    // Also remove player from teams if they were part of them
     teamA.playersData = teamA.playersData.filter((p) => p.id !== playerId);
     teamB.playersData = teamB.playersData.filter((p) => p.id !== playerId);
     renderTeam(teamA, pitchTeamA, teamATotalStatDisplay, "A");
@@ -673,7 +681,6 @@
     let selectedPlayersFullData = players.filter((p) =>
       selectedPlayerIds.includes(p.id)
     );
-    // Reset any previous positional data when re-dividing
     selectedPlayersFullData = selectedPlayersFullData.map((p) => ({
       ...p,
       currentTop: null,
@@ -689,14 +696,12 @@
     teamA.totalStat = 0;
     teamB.totalStat = 0;
 
-    // Separate GKs and field players
     let gks = selectedPlayersFullData.filter((p) => p.position === "GK");
     let fieldPlayers = selectedPlayersFullData.filter(
       (p) => p.position !== "GK"
     );
-    gks.sort((a, b) => (b.averageStat || 0) - (a.averageStat || 0)); // Sort GKs by rating
+    gks.sort((a, b) => (b.averageStat || 0) - (a.averageStat || 0));
 
-    // Distribute GKs first if available
     if (gks.length > 0) {
       const gkForA = gks.shift();
       teamA.playersData.push(gkForA);
@@ -707,11 +712,9 @@
       teamB.playersData.push(gkForB);
       teamB.totalStat += gkForB.totalStat;
     }
-    // Add remaining GKs (if any) back to field players to be distributed
     fieldPlayers.push(...gks);
-    fieldPlayers.sort((a, b) => (b.averageStat || 0) - (a.averageStat || 0)); // Re-sort all field players
+    fieldPlayers.sort((a, b) => (b.averageStat || 0) - (a.averageStat || 0));
 
-    // Distribute field players
     fieldPlayers.forEach((player) => {
       if (teamA.totalStat <= teamB.totalStat) {
         teamA.playersData.push(player);
@@ -735,7 +738,7 @@
     for (const category in POSITION_CATEGORIES) {
       if (POSITION_CATEGORIES[category].includes(position)) return category;
     }
-    return "FWD"; // Default category if not found (should not happen with defined positions)
+    return "FWD";
   }
 
   function populateFormationDropdowns() {
@@ -770,7 +773,9 @@
     totalStatDisplayElement,
     teamLetter
   ) {
-    pitchElement.innerHTML = ""; // Clear previous tokens
+    const existingTokens = pitchElement.querySelectorAll(".player-token");
+    existingTokens.forEach((token) => token.remove());
+
     let currentFormationLayout = FORMATIONS[teamDataObj.formation];
     if (!currentFormationLayout) {
       console.error(
@@ -778,18 +783,17 @@
         teamDataObj.formation,
         "Defaulting to 4-4-2."
       );
-      currentFormationLayout = FORMATIONS["4-4-2"]; // Fallback
+      currentFormationLayout = FORMATIONS["4-4-2"];
     }
     let calculatedTeamPowerLevel = 0;
-    const availablePlayers = [...teamDataObj.playersData]; // Create a mutable copy
-    const formationSlots = []; // To hold {id, top, left} for each slot in the formation
+    const availablePlayers = [...teamDataObj.playersData];
+    const formationSlots = [];
 
-    // Populate formationSlots from the currentFormationLayout
     Object.keys(POSITION_CATEGORIES).forEach((roleCat) => {
       if (currentFormationLayout[roleCat]) {
         currentFormationLayout[roleCat].forEach((posDetails, index) => {
           formationSlots.push({
-            id: `${roleCat}_${index}`, // Unique ID for the slot
+            id: `${roleCat}_${index}`,
             ...posDetails,
           });
         });
@@ -798,7 +802,6 @@
 
     const assignedPlayersToFormationSlots = {};
 
-    // Prioritize players who were manually dragged or previously assigned to a specific slot
     availablePlayers.forEach((player) => {
       if (
         player.assignedSlot &&
@@ -810,14 +813,12 @@
       }
     });
 
-    // Remove already assigned players from available pool
     let tempAvailablePlayers = availablePlayers.filter(
       (p) => !Object.values(assignedPlayersToFormationSlots).includes(p)
     );
 
-    // Assign players to their 'natural' position categories first
     formationSlots.forEach((slot) => {
-      if (assignedPlayersToFormationSlots[slot.id]) return; // Slot already filled
+      if (assignedPlayersToFormationSlots[slot.id]) return;
 
       const slotCategory = slot.id.split("_")[0];
       let bestPlayerForSlot = null;
@@ -838,15 +839,13 @@
       }
       if (bestPlayerForSlot) {
         assignedPlayersToFormationSlots[slot.id] = bestPlayerForSlot;
-        tempAvailablePlayers.splice(bestPlayerIndex, 1); // Remove assigned player
+        tempAvailablePlayers.splice(bestPlayerIndex, 1);
       }
     });
 
-    // Fill remaining slots with remaining players
     formationSlots.forEach((slot) => {
-      if (assignedPlayersToFormationSlots[slot.id]) return; // Slot already filled
+      if (assignedPlayersToFormationSlots[slot.id]) return;
       if (tempAvailablePlayers.length > 0) {
-        // Assign the best remaining player, regardless of position, to fill the slot
         tempAvailablePlayers.sort(
           (a, b) => (b.averageStat || 0) - (a.averageStat || 0)
         );
@@ -854,31 +853,51 @@
       }
     });
 
-    // Render tokens
     formationSlots.forEach((slot) => {
       const player = assignedPlayersToFormationSlots[slot.id];
       if (player) {
-        const token = document.createElement("div");
-        token.className = "player-token";
-        token.textContent = player.name.substring(0, 3).toUpperCase();
-        token.title = `${player.name} (${player.position} - AVG ${player.averageStat})`;
+        const tokenWrapper = document.createElement("div");
+        tokenWrapper.className = "player-token";
+        tokenWrapper.style.top = player.currentTop || slot.top;
+        tokenWrapper.style.left = player.currentLeft || slot.left;
+        tokenWrapper.draggable = true;
+        tokenWrapper.dataset.playerId = player.id;
+        tokenWrapper.dataset.team = teamLetter;
+        tokenWrapper.dataset.originalSlotId = slot.id;
 
-        // Use stored position if available (from drag/drop or previous load), else use formation slot
-        token.style.top = player.currentTop || slot.top;
-        token.style.left = player.currentLeft || slot.left;
+        const teamColor =
+          teamLetter === "A"
+            ? "var(--color-electric-blue)"
+            : "var(--color-hot-pink)";
+        const truncatedName =
+          player.name.length > 8
+            ? player.name.substring(0, 7) + "..."
+            : player.name;
 
-        token.dataset.playerId = player.id;
-        token.dataset.team = teamLetter;
-        token.dataset.originalSlotId = slot.id; // Store the original slot for reference
-        token.draggable = true;
-        token.addEventListener("dragstart", handleDragStart);
-        pitchElement.appendChild(token);
+        const jerseyColor = player.position === "GK" ? "#555" : teamColor;
+
+        const jerseySVG = `
+              <svg viewBox="0 0 80 80" class="player-jersey-svg">
+                  <g transform="translate(0, -5)">
+                      <path d="M20,15 h40 l15,10 v15 h-70 v-15 z" fill="${jerseyColor}" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                      <path d="M15,40 h50 v30 h-50 z" fill="${jerseyColor}" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                      <path d="M35,18 C 37,12, 43,12, 45,18" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="2.5" />
+                      <text x="40" y="42" class="jersey-number">${player.averageStat}</text>
+                      <rect x="10" y="58" width="60" height="15" fill="rgba(0,0,0,0.5)" rx="4"/>
+                      <text x="40" y="69" class="jersey-name">${truncatedName}</text>
+                  </g>
+              </svg>
+          `;
+
+        tokenWrapper.innerHTML = jerseySVG;
+        pitchElement.appendChild(tokenWrapper);
+        tokenWrapper.addEventListener("dragstart", handleDragStart);
+
         calculatedTeamPowerLevel += player.totalStat;
 
-        // Update player object with current position if not manually set
         if (!player.currentTop) player.currentTop = slot.top;
         if (!player.currentLeft) player.currentLeft = slot.left;
-        player.assignedSlot = slot.id; // Mark player as assigned to this slot
+        player.assignedSlot = slot.id;
       }
     });
     teamDataObj.totalStat = calculatedTeamPowerLevel;
@@ -887,11 +906,17 @@
 
   let draggedPlayerElement = null;
   function handleDragStart(event) {
-    draggedPlayerElement = event.target;
-    event.dataTransfer.setData("text/plain", event.target.dataset.playerId);
-    event.dataTransfer.setData("sourceTeam", event.target.dataset.team);
+    draggedPlayerElement = event.currentTarget;
+    event.dataTransfer.setData(
+      "text/plain",
+      draggedPlayerElement.dataset.playerId
+    );
+    event.dataTransfer.setData("sourceTeam", draggedPlayerElement.dataset.team);
     event.dataTransfer.effectAllowed = "move";
-    draggedPlayerElement.classList.add("dragging");
+
+    setTimeout(() => {
+      if (draggedPlayerElement) draggedPlayerElement.classList.add("dragging");
+    }, 0);
   }
   function handleDragOver(event) {
     event.preventDefault();
@@ -901,10 +926,10 @@
     event.preventDefault();
     if (!draggedPlayerElement) return;
 
-    const targetPitchElement = event.target.closest(".pitch");
+    draggedPlayerElement.classList.remove("dragging");
+
+    const targetPitchElement = event.currentTarget.closest(".pitch");
     if (!targetPitchElement) {
-      // Dropped outside a valid pitch
-      draggedPlayerElement.classList.remove("dragging");
       draggedPlayerElement = null;
       return;
     }
@@ -917,23 +942,11 @@
     const tokenWidth = draggedPlayerElement.offsetWidth;
     const tokenHeight = draggedPlayerElement.offsetHeight;
 
-    // Calculate position relative to the pitch, ensuring it's within bounds
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top;
 
-    // Convert to percentage, ensuring token center is used for calculation for better feel
-    let newLeftPercent = ((x - tokenWidth / 2) / rect.width) * 100;
-    let newTopPercent = ((y - tokenHeight / 2) / rect.height) * 100;
-
-    // Clamp values to ensure token stays within pitch boundaries
-    newLeftPercent = Math.max(
-      0,
-      Math.min(100 - (tokenWidth / rect.width) * 100, newLeftPercent)
-    );
-    newTopPercent = Math.max(
-      0,
-      Math.min(100 - (tokenHeight / rect.height) * 100, newTopPercent)
-    );
+    let newLeftPercent = (x / rect.width) * 100;
+    let newTopPercent = (y / rect.height) * 100;
 
     const newLeft = `${newLeftPercent}%`;
     const newTop = `${newTopPercent}%`;
@@ -948,36 +961,31 @@
 
     if (playerIndexInSource > -1) {
       playerObject = sourceTeamData.playersData[playerIndexInSource];
-      playerObject.currentTop = newTop; // Store new position
+      playerObject.currentTop = newTop;
       playerObject.currentLeft = newLeft;
-      playerObject.assignedSlot = "MANUAL_DROP"; // Indicate it was manually placed
+      playerObject.assignedSlot = "MANUAL_DROP";
 
       if (sourceTeamLetter !== targetTeamLetter) {
-        // Move player data to the new team
         sourceTeamData.playersData.splice(playerIndexInSource, 1);
         targetTeamData.playersData.push(playerObject);
       }
     } else {
       console.error("Dragged player not found in source team data.");
-      draggedPlayerElement.classList.remove("dragging");
       draggedPlayerElement = null;
       return;
     }
 
-    // Re-render both teams to reflect changes
     renderTeam(teamA, pitchTeamA, teamATotalStatDisplay, "A");
     renderTeam(teamB, pitchTeamB, teamBTotalStatDisplay, "B");
 
-    draggedPlayerElement.classList.remove("dragging");
     draggedPlayerElement = null;
-    saveTeamData(); // Save changes after drag/drop
+    saveTeamData();
   }
 
   function saveTeamData() {
     const teamsToStore = {
       teamA: {
         playersData: teamA.playersData.map((p) => ({
-          // Only store essential data for persistence
           id: p.id,
           currentTop: p.currentTop,
           currentLeft: p.currentLeft,
@@ -1001,15 +1009,13 @@
   function loadTeamData() {
     const storedTeams = localStorage.getItem("cyberSquadTeamsRetro");
     if (storedTeams && players.length > 0) {
-      // Ensure players are loaded first
       const loaded = JSON.parse(storedTeams);
 
-      // Function to merge loaded player position data with full player data
       const mergePlayerData = (loadedPlayersTeamData) => {
         return loadedPlayersTeamData
           .map((tp) => {
             const fullPlayer = players.find((p) => p.id === tp.id);
-            return fullPlayer ? { ...fullPlayer, ...tp } : null; // Merge, tp overrides position/slot
+            return fullPlayer ? { ...fullPlayer, ...tp } : null;
           })
           .filter((p) => p !== null);
       };
@@ -1064,8 +1070,8 @@
         renderRegisteredPlayersList();
         renderTeam(teamA, pitchTeamA, teamATotalStatDisplay, "A");
         renderTeam(teamB, pitchTeamB, teamBTotalStatDisplay, "B");
-        formationSelectTeamA.value = "4-4-2"; // Reset dropdown
-        formationSelectTeamB.value = "4-4-2"; // Reset dropdown
+        formationSelectTeamA.value = "4-4-2";
+        formationSelectTeamB.value = "4-4-2";
         divisionMessageArea.textContent =
           "System memory wiped. Awaiting new directives.";
         messageModal.classList.remove("active");
@@ -1090,9 +1096,9 @@
 
   function showMessage(message) {
     modalMessageText.textContent = message;
-    modalButtonsContainer.innerHTML = ""; // Clear previous buttons
+    modalButtonsContainer.innerHTML = "";
     const rogerButton = document.createElement("button");
-    rogerButton.id = "modalCloseBtn"; // Ensure this ID is unique or re-bind event
+    rogerButton.id = "modalCloseBtn";
     rogerButton.className = "btn";
     rogerButton.textContent = "ROGER";
     rogerButton.addEventListener("click", () =>

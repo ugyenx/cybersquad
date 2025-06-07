@@ -34,6 +34,14 @@
       </nav>
     </header>
 
+    <button id="mobile-nav-toggle">
+      <svg viewBox="0 0 100 80" width="40" height="40">
+        <rect width="100" height="15"></rect>
+        <rect y="30" width="100" height="15"></rect>
+        <rect y="60" width="100" height="15"></rect>
+      </svg>
+    </button>
+
     <main>
       <!-- Player Registration Section -->
       <section id="register-player-section" class="tab-content active">
@@ -54,7 +62,9 @@
               </div>
               <!-- Player Image Upload -->
               <div class="form-group">
-                <label for="player-image-input">Agent Scan</label>
+                <label for="player-image-input"
+                  >Agent Scan (Image - Optional)</label
+                >
                 <input type="file" id="player-image-input" accept="image/*" />
                 <img id="player-image-preview" src="#" alt="Agent Preview" />
               </div>
@@ -144,7 +154,7 @@
                 />
               </div>
             </div>
-            <div id="total-stat-sum">Total Matrix: 300</div>
+            <div id="total-stat-sum">Total Stats: 300</div>
             <div class="form-actions">
               <button type="submit" class="btn">Save Agent</button>
               <button
@@ -231,7 +241,29 @@
                 <label for="formation-team-a">Matrix:</label>
                 <select id="formation-team-a" data-team="A"></select>
               </div>
-              <div class="pitch" id="pitch-team-a" data-team="A"></div>
+              <div class="pitch" id="pitch-team-a" data-team="A">
+                <svg
+                  class="pitch-lines"
+                  preserveAspectRatio="xMidYMid meet"
+                  viewBox="0 0 300 500"
+                >
+                  <rect x="2" y="2" width="296" height="496" />
+                  <line x1="2" y1="250" x2="298" y2="250" />
+                  <circle cx="150" cy="250" r="40" />
+                  <circle
+                    cx="150"
+                    cy="250"
+                    r="3"
+                    fill="rgba(255,255,255,0.6)"
+                  />
+                  <path d="M 80 498 A 40 40 0 0 0 220 498" />
+                  <path d="M 80 2 A 40 40 0 0 1 220 2" />
+                  <rect x="50" y="420" width="200" height="78" />
+                  <rect x="90" y="470" width="120" height="28" />
+                  <rect x="50" y="2" width="200" height="78" />
+                  <rect x="90" y="2" width="120" height="28" />
+                </svg>
+              </div>
             </div>
             <div class="team-panel" id="team-b-panel">
               <h3>Omega Squad</h3>
@@ -242,7 +274,29 @@
                 <label for="formation-team-b">Matrix:</label>
                 <select id="formation-team-b" data-team="B"></select>
               </div>
-              <div class="pitch" id="pitch-team-b" data-team="B"></div>
+              <div class="pitch" id="pitch-team-b" data-team="B">
+                <svg
+                  class="pitch-lines"
+                  preserveAspectRatio="xMidYMid meet"
+                  viewBox="0 0 300 500"
+                >
+                  <rect x="2" y="2" width="296" height="496" />
+                  <line x1="2" y1="250" x2="298" y2="250" />
+                  <circle cx="150" cy="250" r="40" />
+                  <circle
+                    cx="150"
+                    cy="250"
+                    r="3"
+                    fill="rgba(255,255,255,0.6)"
+                  />
+                  <path d="M 80 498 A 40 40 0 0 0 220 498" />
+                  <path d="M 80 2 A 40 40 0 0 1 220 2" />
+                  <rect x="50" y="420" width="200" height="78" />
+                  <rect x="90" y="470" width="120" height="28" />
+                  <rect x="50" y="2" width="200" height="78" />
+                  <rect x="90" y="2" width="120" height="28" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -254,7 +308,7 @@
         System Reset
       </button>
       <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7">
-        CyberSquad &copy; 2025 KUK Rocks
+        CyberSquad
       </p>
     </footer>
 
@@ -267,6 +321,6 @@
       </div>
     </div>
 
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
   </body>
 </html>
