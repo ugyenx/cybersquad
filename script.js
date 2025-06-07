@@ -226,7 +226,7 @@
 
   function updateTotalStatSum() {
     const sum = calculateTotalStatSumFromInputs();
-    totalStatSumDisplay.textContent = `Total Stats: ${sum}`;
+    totalStatSumDisplay.textContent = `Total Matrix: ${sum}`;
     return sum;
   }
 
@@ -268,19 +268,17 @@
     });
 
     mobileNavToggle.addEventListener("click", () => {
-      header.classList.remove("header-hidden");
+      header.classList.toggle("header-hidden");
     });
 
-    let lastScrollY = window.scrollY;
+    let initialScrollPassed = false;
     window.addEventListener("scroll", () => {
-      if (window.innerWidth <= 768) {
-        // Only run on mobile
-        if (lastScrollY < window.scrollY && window.scrollY > 150) {
+      if (window.innerWidth <= 768 && !initialScrollPassed) {
+        if (window.scrollY > 50) {
+          // Trigger after a small scroll
           header.classList.add("header-hidden");
-        } else {
-          header.classList.remove("header-hidden");
+          initialScrollPassed = true;
         }
-        lastScrollY = window.scrollY;
       }
     });
 
